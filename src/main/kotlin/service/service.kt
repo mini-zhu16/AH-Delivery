@@ -2,6 +2,7 @@ package com.AH.delivery.service
 
 import com.AH.delivery.datamodel.Delivery
 import com.AH.delivery.datamodel.DeliveryStatus
+import com.AH.delivery.dto.BulkDeliveryUpdateRequest
 import com.AH.delivery.dto.DeliveryUpdateRequest
 import com.AH.delivery.repo.DeliveryRepository
 import org.springframework.stereotype.Service
@@ -28,4 +29,20 @@ class DeliveryService(private val deliveryrepo: DeliveryRepository) {
             return deliveryrepo.save(delivery)
         }
     }
+
+    fun bulkupdateDelivery(requests: List<BulkDeliveryUpdateRequest>): List<Delivery> {
+        val responses = mutableListOf<Delivery>()
+        for (request in requests) {
+            val id = request.id
+            val delivery = deliveryrepo.findById(id).orElseThrow {IllegalArgumentException("ID $id does not exist")}
+            if (request.status == DeliveryStatus.DELIVERED && request.finishedAt == null){
+                throw IllegalArgumentException("Finished time must be provided for delivered goods")
+            } else {
+                delivery.status = request.status
+                delivery.finishedAt = request.finishedAt
+            }
+            responses.add(delivery)
+            }
+        return responses
+        }
 }

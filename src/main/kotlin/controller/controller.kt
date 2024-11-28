@@ -2,6 +2,7 @@ package com.AH.delivery.controller
 
 import com.AH.delivery.service.DeliveryService
 import com.AH.delivery.datamodel.Delivery
+import com.AH.delivery.dto.BulkDeliveryUpdateRequest
 import com.AH.delivery.dto.DeliveryUpdateRequest
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -19,5 +20,11 @@ class DeliveryController(private val deliveryservice: DeliveryService) {
         @RequestBody request: DeliveryUpdateRequest): ResponseEntity<Delivery> {
         val updatedDelivery = deliveryservice.updateDelivery(id, request)
         return ResponseEntity.ok(updatedDelivery)
+    }
+
+    @PatchMapping("/bulk-update")
+    fun bulkupdateDelivery(@RequestBody requests: List<BulkDeliveryUpdateRequest>): ResponseEntity<Map<String, List<Delivery>>>  {
+        val bulkupdateDelivery = deliveryservice.bulkupdateDelivery(requests)
+        return ResponseEntity.ok(mapOf("deliveries" to bulkupdateDelivery))
     }
 }
