@@ -30,5 +30,5 @@ data class DeliverySummary(
     val summary: Int,
 
     @field: NotNull
-    val averageMinutesBetweenDeliveryStart: Double
+    val averageMinutesBetweenDeliveryStart: Long?
 )
