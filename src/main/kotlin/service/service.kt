@@ -4,9 +4,11 @@ import com.AH.delivery.datamodel.Delivery
 import com.AH.delivery.datamodel.DeliveryStatus
 import com.AH.delivery.dto.BulkDeliveryUpdateRequest
 import com.AH.delivery.dto.DeliveryUpdateRequest
+import com.AH.delivery.dto.DeliverySummary
 import com.AH.delivery.repo.DeliveryRepository
 import org.springframework.stereotype.Service
-import java.time.LocalDateTime
+import java.time.Duration
+import java.time.LocalDate
 import java.util.*
 
 @Service
@@ -45,4 +47,21 @@ class DeliveryService(private val deliveryrepo: DeliveryRepository) {
             }
         return responses
         }
+
+    fun summaryDelivery(): DeliverySummary {
+        val yesterdayStart = LocalDate.now().minusDays(1).atStartOfDay()
+        val countdeliveries = deliveryrepo.countByStartDateAfter(yesterdayStart)
+        val deliveries = deliveryrepo.findByStartDateAfter(yesterdayStart)
+        val maxstartedAt = deliveries.maxOfOrNull { it.startedAt }
+        val minstartedAt = deliveries.minOfOrNull { it.startedAt }
+        // if there was only one or no delivery yesterday, then the average minutes between
+        // orders should return as null
+        val diffminutes = if(countdeliveries <= 1){
+            Duration.between(maxstartedAt, minstartedAt).toMinutes()
+        } else {
+            null
+        }
+        val averageMinutesBetweenDeliveryStart = diffminutes?.div(countdeliveries - 1)
+        return DeliverySummary(countdeliveries, averageMinutesBetweenDeliveryStart)
+    }
 }
