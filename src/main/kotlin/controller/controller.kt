@@ -5,6 +5,8 @@ import com.AH.delivery.datamodel.Delivery
 import com.AH.delivery.dto.BulkDeliveryUpdateRequest
 import com.AH.delivery.dto.DeliverySummary
 import com.AH.delivery.dto.DeliveryUpdateRequest
+import jakarta.validation.Valid
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import java.util.*
@@ -13,7 +15,10 @@ import java.util.*
 @RequestMapping("/deliveries")
 class DeliveryController(private val deliveryservice: DeliveryService) {
     @PostMapping
-    fun createDelivery(@RequestBody delivery: Delivery): Delivery = deliveryservice.save(delivery)
+    fun createDelivery(@Valid @RequestBody delivery: Delivery): ResponseEntity<Delivery>{
+        val createDelivery = deliveryservice.save(delivery)
+        return ResponseEntity.ok(createDelivery)
+    }
 
     @PatchMapping("/{id}")
     fun updateDelivery(
