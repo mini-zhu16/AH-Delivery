@@ -13,7 +13,7 @@ enum class DeliveryStatus{IN_PROGRESS, DELIVERED}
 @Entity
 data class Delivery(
     @Id val id: UUID = UUID.randomUUID(),
-    @field: NotNull val vehicleId: String,
+    @field: NotNull val vehicleId: String = "",
     @field: NotNull val startedAt: LocalDateTime = LocalDateTime.now(),
     var finishedAt: LocalDateTime? = null,
     @Enumerated(EnumType.STRING)
