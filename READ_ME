@@ -1,0 +1,25 @@
+Requirements
+ . Java 17+
+ . Docker (for containerization)
+ . Postman (for testing endpoints)
+
+1.Clone the Repository:
+git clone https://github.com/mini-zhu16/AH-Delivery.git
+cd AH-assignment
+
+2.Build the Application:
+mvn clean package
+
+3. Dockerizing the Application:
+docker-compose build
+docker-compose up
+
+4. Open your browser and go to http://localhost:8080/h2-console/ and use the following connection settings:
+. JDBC URL: jdbc:h2:mem:testdb
+. User Name: sa
+. Password: password
+
+5. Go to postman and test the app using the available methods and endpoints
+URL: http://localhost:8080/deliveries
+
+6. Go to the database, run the query and check the data.
