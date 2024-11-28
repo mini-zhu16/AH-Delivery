@@ -24,3 +24,11 @@ data class BulkDeliveryUpdateRequest(
     @field:JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "UTC")
     val finishedAt: LocalDateTime?= null
 )
+
+data class DeliverySummary(
+    @field: NotNull
+    val summary: Int,
+
+    @field: NotNull
+    val averageMinutesBetweenDeliveryStart: Double
+)
