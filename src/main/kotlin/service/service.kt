@@ -6,14 +6,17 @@ import com.AH.delivery.dto.BulkDeliveryUpdateRequest
 import com.AH.delivery.dto.DeliveryUpdateRequest
 import com.AH.delivery.dto.DeliverySummary
 import com.AH.delivery.repo.DeliveryRepository
+import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
 import java.time.Duration
 import java.time.LocalDate
 import java.util.*
 
 @Service
-class DeliveryService(private val deliveryrepo: DeliveryRepository) {
-    fun save(delivery: Delivery): Delivery {
+open class DeliveryService(private val deliveryrepo: DeliveryRepository) {
+
+    @Transactional
+    open fun save(delivery: Delivery): Delivery {
         if (delivery.status != DeliveryStatus.IN_PROGRESS && delivery.status != DeliveryStatus.DELIVERED) {
             throw IllegalArgumentException("Status must be IN_PROGRESS or DELIVERED")
         } else {
@@ -21,7 +24,8 @@ class DeliveryService(private val deliveryrepo: DeliveryRepository) {
         }
     }
 
-    fun updateDelivery(id: UUID, request: DeliveryUpdateRequest): Delivery {
+    @Transactional
+    open fun updateDelivery(id: UUID, request: DeliveryUpdateRequest): Delivery {
         val delivery = deliveryrepo.findById(id).orElseThrow { IllegalArgumentException("ID $id does not exist") }
         if (request.status == DeliveryStatus.DELIVERED && request.finishedAt == null){
             throw IllegalArgumentException("Finished time must be provided for delivered goods")
@@ -32,7 +36,8 @@ class DeliveryService(private val deliveryrepo: DeliveryRepository) {
         }
     }
 
-    fun bulkupdateDelivery(requests: List<BulkDeliveryUpdateRequest>): List<Delivery> {
+    @Transactional
+    open fun bulkupdateDelivery(requests: List<BulkDeliveryUpdateRequest>): List<Delivery> {
         val responses = mutableListOf<Delivery>()
         for (request in requests) {
             val id = request.id
@@ -42,13 +47,14 @@ class DeliveryService(private val deliveryrepo: DeliveryRepository) {
             } else {
                 delivery.status = request.status
                 delivery.finishedAt = request.finishedAt
+                responses.add(deliveryrepo.save(delivery))
             }
-            responses.add(delivery)
-            }
-        return responses
         }
+        return responses
+    }
 
-    fun summaryDelivery(): DeliverySummary {
+    @Transactional
+    open fun summaryDelivery(): DeliverySummary {
         val yesterdayStart = LocalDate.now().minusDays(1).atStartOfDay()
         val todayStart = LocalDate.now().atStartOfDay()
         val countdeliveries = deliveryrepo.countByStartDateAfter(yesterdayStart, todayStart)
