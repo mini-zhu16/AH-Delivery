@@ -50,8 +50,9 @@ class DeliveryService(private val deliveryrepo: DeliveryRepository) {
 
     fun summaryDelivery(): DeliverySummary {
         val yesterdayStart = LocalDate.now().minusDays(1).atStartOfDay()
-        val countdeliveries = deliveryrepo.countByStartDateAfter(yesterdayStart)
-        val deliveries = deliveryrepo.findByStartDateAfter(yesterdayStart)
+        val todayStart = LocalDate.now().atStartOfDay()
+        val countdeliveries = deliveryrepo.countByStartDateAfter(yesterdayStart, todayStart)
+        val deliveries = deliveryrepo.findByStartDateAfter(yesterdayStart, todayStart)
         val maxstartedAt = deliveries.maxOfOrNull { it.startedAt }
         val minstartedAt = deliveries.minOfOrNull { it.startedAt }
         // if there was only one or no delivery yesterday, then the average minutes between

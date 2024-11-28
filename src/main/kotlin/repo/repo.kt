@@ -11,14 +11,16 @@ import java.util.*
 
 @Repository
 interface DeliveryRepository : JpaRepository<Delivery, UUID>{
-    @Query ("""SELECT count(d) FROM Delivery d WHERE d.startedAt > :start""")
+    @Query ("""SELECT count(d) FROM Delivery d WHERE d.startedAt > :yesterdaystart AND d.startedAt < :todaystart""")
     fun countByStartDateAfter(
-        @Param("start") start: LocalDateTime
+        @Param("yesterdaystart") yesterdaystart: LocalDateTime,
+        @Param("todaystart") todaystart: LocalDateTime
     ): Int
 
-    @Query ("""SELECT d FROM Delivery d WHERE d.startedAt > :start""")
+    @Query ("""SELECT d FROM Delivery d WHERE d.startedAt > :yesterdaystart AND d.startedAt < :todaystart""")
     fun findByStartDateAfter(
-        @Param("start") start: LocalDateTime
+        @Param("yesterdaystart") yesterdaystart: LocalDateTime,
+        @Param("todaystart") todaystart: LocalDateTime
     ): List<Delivery>
 }
 
