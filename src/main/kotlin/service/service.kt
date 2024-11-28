@@ -10,6 +10,7 @@ import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
 import java.time.Duration
 import java.time.LocalDate
+import java.time.ZonedDateTime
 import java.util.*
 
 @Service
@@ -55,16 +56,18 @@ open class DeliveryService(private val deliveryrepo: DeliveryRepository) {
 
     @Transactional
     open fun summaryDelivery(): DeliverySummary {
-        val yesterdayStart = LocalDate.now().minusDays(1).atStartOfDay()
-        val todayStart = LocalDate.now().atStartOfDay()
+        val now = ZonedDateTime.now()
+        val zone = now.zone
+        val yesterdayStart = now.minusDays(1).toLocalDate().atStartOfDay(zone)
+        val todayStart = now.toLocalDate().atStartOfDay(zone)
         val countdeliveries = deliveryrepo.countByStartDateAfter(yesterdayStart, todayStart)
         val deliveries = deliveryrepo.findByStartDateAfter(yesterdayStart, todayStart)
         val maxstartedAt = deliveries.maxOfOrNull { it.startedAt }
         val minstartedAt = deliveries.minOfOrNull { it.startedAt }
         // if there was only one or no delivery yesterday, then the average minutes between
         // orders should return as null
-        val diffminutes = if(countdeliveries <= 1){
-            Duration.between(maxstartedAt, minstartedAt).toMinutes()
+        val diffminutes = if(countdeliveries > 1 && maxstartedAt != null && minstartedAt != null){
+            Duration.between(minstartedAt, maxstartedAt).toMinutes()
         } else {
             null
         }
