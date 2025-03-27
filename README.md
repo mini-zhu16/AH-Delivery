@@ -1,4 +1,4 @@
-# Albert Heijn Backend Technical Assignment
+# Backend Technical Assignment
 
 ## Assignment
 
@@ -24,12 +24,7 @@ Follow the requirements below and be ready to support decisions made in implemen
 - The data is stored in a `database`, you can choose what type.
 - This is a customer facing application, which means a website will use this data to display it to the user.
 
-## Sending in the assignment
-- We expect a docker compose file that we can run with `docker-compose up` which should spin up a functional application at port 8080.
-- Create a `.zip` or `.tar.gz` of the entire project **including the .git folder**.
-- Send in only the zip file.
 
-Thank you for your interest and time invested into making this assignment.
 
 
 
